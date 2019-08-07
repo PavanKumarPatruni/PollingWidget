@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:padding="@dimen/fifty"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/buttonPollingWithText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fifty"
+        android:background="@drawable/gradient_background"
+        android:text="@string/PollingWithText"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonPollingWithImage"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fifty"
+        android:layout_marginTop="@dimen/ten"
+        android:background="@drawable/gradient_background"
+        android:text="@string/PollingWithImage"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintTop_toBottomOf="@+id/buttonPollingWithText" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fifty"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/text_thirty"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/buttonPollingWithText" />
+
+</android.support.constraint.ConstraintLayout>

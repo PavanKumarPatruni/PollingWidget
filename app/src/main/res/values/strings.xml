@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PollingWidget</string>
+    <string name="PollingWithText">Polling With Text</string>
+    <string name="PollingWithImage">Polling With Image</string>
+</resources>
