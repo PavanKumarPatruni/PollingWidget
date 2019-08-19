@@ -16,6 +16,8 @@ import com.pavankumarpatruni.pollingwidget.listeners.OnItemClickListener
 import com.pavankumarpatruni.pollingwidget.models.Answer
 import com.pavankumarpatruni.pollingwidget.models.PollingItem
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.layout_polling_widget.view.*
 
 class PollingWidget @JvmOverloads constructor(
@@ -83,10 +85,13 @@ class PollingWidget @JvmOverloads constructor(
         var index = 0
 
         val observable = Observable.fromIterable(answers)
-        observable.subscribe {
-            prepareChildView(index, len, it)
-            index++
-        }
+        observable
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                prepareChildView(index, len, it)
+                index++
+            }
     }
 
     private fun prepareChildView(index: Int, len: Int, answer: Answer) {

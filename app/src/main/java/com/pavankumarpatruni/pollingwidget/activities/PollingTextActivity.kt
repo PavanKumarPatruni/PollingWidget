@@ -27,6 +27,8 @@ class PollingTextActivity : AppCompatActivity(),
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
+        pollingWidget?.setOnItemClickListener(this)
+
         pollingViewModel = ViewModelProviders.of(this).get(PollingViewModel::class.java)
         pollingViewModel.getPollingItem().observe(this, Observer {
             selectedAnswer = it?.selectedAnswer!!
