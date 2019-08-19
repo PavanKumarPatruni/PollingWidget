@@ -4,6 +4,7 @@ import android.support.test.espresso.Espresso
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
+import com.pavankumarpatruni.pollingwidget.activities.PollingTextActivity
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before

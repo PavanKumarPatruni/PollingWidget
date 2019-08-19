@@ -1,6 +1,7 @@
 package com.pavankumarpatruni.pollingwidget.widgets
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
@@ -10,11 +11,12 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.pavankumarpatruni.pollingwidget.OnItemClickListener
 import com.pavankumarpatruni.pollingwidget.R
+import com.pavankumarpatruni.pollingwidget.listeners.OnItemClickListener
 import com.pavankumarpatruni.pollingwidget.models.Answer
 import com.pavankumarpatruni.pollingwidget.models.PollingItem
-
+import io.reactivex.Observable
+import kotlinx.android.synthetic.main.layout_polling_widget.view.*
 
 class PollingWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -57,13 +59,13 @@ class PollingWidget @JvmOverloads constructor(
             firstClick = false
         }
 
-        val textViewQuestion = view.findViewById<TextView>(R.id.textViewQuestion)
+        val textViewQuestion = view.textViewQuestion
         textViewQuestion.text = pollingItem.question
 
-        progressBarTitle = view.findViewById<ProgressBar>(R.id.progressBarTitle)
+        progressBarTitle = view.progressBarTitle
         progressBarTitle?.visibility = GONE
 
-        linearLayoutAnswers = view.findViewById<LinearLayout>(R.id.linearLayoutAnswers)
+        linearLayoutAnswers = view.linearLayoutAnswers
         attachAnswers()
 
         this.addView(view)
@@ -72,76 +74,73 @@ class PollingWidget @JvmOverloads constructor(
     /**
      * Preparing Answers
      */
+    @SuppressLint("CheckResult")
     private fun attachAnswers() {
         linearLayoutAnswers?.removeAllViews()
 
         val answers = pollingItem.answers
         val len = answers.size
+        var index = 0
 
-        for ((index, answer: Answer) in answers.withIndex()) {
-            val view = LayoutInflater.from(context)
-                .inflate(R.layout.layout_item_polling_widget, this, false)
-
-            val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
-            progressBar.progressDrawable =
-                this.resources.getDrawable(R.drawable.custom_progressbar)
-            progressBar.max = 100
-            progressBar.progress = 0
-
-            val textViewAnswer = view.findViewById<TextView>(R.id.textViewAnswer)
-            textViewAnswer.text = answer.answer
-
-            val textViewPercentage = view.findViewById<TextView>(R.id.textViewPercentage)
-            val percent = answer.count % answer.total
-
-            textViewPercentage.text = percent.toString().plus("%")
-            if (selectedAnswer != -1) {
-                progressBar.progress = percent
-                textViewPercentage.visibility = View.VISIBLE
-            } else {
-                progressBar.progress = 0
-                textViewPercentage.visibility = View.GONE
-            }
-            view.isSelected = false
-
-            view.tag = index
-            view.setOnClickListener {
-                showProgressbar()
-
-                onItemClickListener?.onItemClick(index)
-
-                answerSubmitted = true
-                selectedAnswer = view.tag as Int
-                attachAnswers()
-            }
-
-            if (selectedAnswer == index) {
-                view.isSelected = true
-                progressBar.progressDrawable =
-                    this.resources.getDrawable(R.drawable.custom_progressbar_active)
-            }
-
-            if (answerSubmitted && firstClick) {
-                setProgressAnimate(progressBar, percent)
-
-                if (index == len - 1) {
-                    firstClick = false
-                }
-            }
-
-            linearLayoutAnswers?.addView(view)
-
-            println(linearLayoutAnswers?.childCount)
-
+        val observable = Observable.fromIterable(answers)
+        observable.subscribe {
+            prepareChildView(index, len, it)
+            index++
         }
     }
 
-    /**
-     * Clearing UI
-     */
-    fun clearViews() {
-        linearLayoutAnswers?.removeAllViews()
-        linearLayoutAnswers?.invalidate()
+    private fun prepareChildView(index: Int, len: Int, answer: Answer) {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.layout_item_polling_widget, this, false)
+
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+        progressBar.progressDrawable =
+            this.resources.getDrawable(R.drawable.custom_progressbar)
+        progressBar.max = 100
+        progressBar.progress = 0
+
+        val textViewAnswer = view.findViewById<TextView>(R.id.textViewAnswer)
+        textViewAnswer.text = answer.answer
+
+        val textViewPercentage = view.findViewById<TextView>(R.id.textViewPercentage)
+        val percent = answer.count % answer.total
+
+        textViewPercentage.text = percent.toString().plus("%")
+        if (selectedAnswer != -1) {
+            progressBar.progress = percent
+            textViewPercentage.visibility = View.VISIBLE
+        } else {
+            progressBar.progress = 0
+            textViewPercentage.visibility = View.GONE
+        }
+        view.isSelected = false
+
+        view.tag = index
+        view.setOnClickListener {
+            showProgressbar()
+
+            onItemClickListener?.onItemClick(index)
+
+            answerSubmitted = true
+            selectedAnswer = view.tag as Int
+            attachAnswers()
+        }
+
+        if (selectedAnswer == index) {
+            view.isSelected = true
+            progressBar.progressDrawable =
+                this.resources.getDrawable(R.drawable.custom_progressbar_active)
+        }
+
+        if (answerSubmitted && firstClick) {
+            setProgressAnimate(progressBar, percent)
+
+            if (index == len - 1) {
+                firstClick = false
+            }
+        }
+
+        linearLayoutAnswers?.addView(view)
     }
 
     /**
@@ -157,7 +156,7 @@ class PollingWidget @JvmOverloads constructor(
      * Hide ProgressBar
      */
     private fun hideProgressbar() {
-        progressBarTitle?.visibility = View.GONE
+        progressBarTitle?.visibility = View.INVISIBLE
     }
 
     /**

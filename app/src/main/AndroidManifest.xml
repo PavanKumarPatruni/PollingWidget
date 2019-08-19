@@ -13,14 +13,14 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".PollingImageActivity"
+            android:name=".activities.PollingImageActivity"
             android:configChanges="orientation|keyboardHidden" />
 
         <activity
-            android:name=".PollingTextActivity"
+            android:name=".activities.PollingTextActivity"
             android:configChanges="orientation|keyboardHidden" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

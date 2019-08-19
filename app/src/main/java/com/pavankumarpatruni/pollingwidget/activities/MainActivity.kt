@@ -1,8 +1,9 @@
-package com.pavankumarpatruni.pollingwidget
+package com.pavankumarpatruni.pollingwidget.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.pavankumarpatruni.pollingwidget.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
